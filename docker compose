@@ -1,0 +1,37 @@
+Docker compose is just a service within docker that let's us launch multiple containers at the same time
+
+
+  # Install Docker Compose
+      sudo docker --version
+      sudo apt-get update
+      sudo apt-get install docker-compose-plugin
+      docker compose version
+
+
+  ---->Now create dockercompose file
+  mkdir project
+  cd project
+  nano dockerfile
+      FROM ubuntu
+  docker build -t --name ubuntu1 .
+  docker images
+  nano docker-compose.yaml
+      version: '3'
+      networks:
+        batman:
+          driver: bridge
+
+      services:
+        web:
+            image: "nginx:latest"
+            ports: 
+              - "80:80"
+            networks: 
+              - batman
+
+
+docker-compose up
+                
+  
+
+      
