@@ -347,6 +347,64 @@ work with Spring
 
 
 
+#To create Docker Volume
+      docker volume create batman
+      docker volume ls
+      docker volume inspect batman
+      docker volume rm batman
+      docker volume ls
+      docker volume prune         <-------it will remove all the volumes
+
+
+# How to mount the volume
+      docker run -it -d --name ConA --mount source=batman, target=/apps ubuntu
+      docker ps
+      docker container inspect ConA
+
+
+
+       docker run -it -d --name ConB --volume flash:/apps ubuntu
+       docker ps
+       docker container inspect ConB
+       docker volume ls
+
+#How to create readonly volume
+        docker volume create supermanRo
+        docker run -it -d --name ConC --mount source=supermanRo, targer=/apps, readonly ubuntu
+        docker ps
+        docker container inspect ConC
+
+
+#Bind Mounts
+        docker run -it -d --name ConA --mount type=bind, source=$(pwd)/fun, targer=/apps ubuntu
+        docker ps
+        docker container inspect ConA
+        docler exec -it ConA bash
+        cd apps/
+        touch hello.txt
+        touch fun.txt
+
+
+
+#DOCKER NETWORK
+        docker network create --driver bridge barbie 
+        docker network ls
+        docker network inspect barbie
+        docker run -it -d --name defaultContainer ubuntu
+        docker ps
+        docker exec -it defaultcontainer bash
+        apt update && apt install iputils-ping -y
+        exit
+        sudo docker network ls
+        sudo docker inspect containerIP
+        
+        
+      
+      
+
+
+
+
 
       
 
