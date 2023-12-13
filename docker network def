@@ -1,0 +1,96 @@
+docker network
+---------------------
+
+1. BRidge Network
+
+Docker containers that re connected by the means of a bridge network can communicate with each other. 
+This also creates a layer f isolation between the docker container that are connected to each other through a brige network.
+
+    docker network create --driver bridge barbie
+    docker network ls
+    docker network inspect barbie
+
+    docker run -it -d --name defaultcontainer ubuntu
+    docker network ls
+    docker network inspect defaultcontainer
+    docker run -it -d --name defaultcontainer2 ubuntu
+    docker network inspect defaultcontainer
+    docker ps
+    docker exec -it defaultcontainer bash
+    apt update && apt install iputils-ping -y
+    exit
+    docker ps
+    docker network ls
+    docker exec -it defaultcontainer bash
+    ping 172.17.0.2
+
+    docker run -it -d --network barbie --name MyCon ubuntu
+    docker ps
+    docker network inspect MyCon
+
+   docker run -it -d --network barbie --name MyCon2 ubuntu
+   docker ps
+   docker network inspect MyCon2
+
+   docker exec -it MyCon bash
+   apt update && apt install iputils-ping -y
+   ping 172.17.0.2
+
+
+  docker container inspect defaultcontainer
+  docker exec -it MyCon bash
+
+
+2. HOST NETWORK
+-------------------------------
+Docker containers that are connected to host network basically share the namespace with their hosts,
+i.e the containers share the IP address of the host and don't have one of their own
+
+    docker run -it -d --network host --name mycon nginx latest
+    docker ps
+    docker container inspect mycon
+    curl localhost
+
+3. OVERLAY NETWORK
+------------------------------
+Docker daemon Hosts that are connectd by the means of an overlay network can communicate with each other. This means that containers present in different
+docker hosts can communicate with each other using the overlay network. This is useful when we need a set of docker hosts to communicate with each other in a 
+docker swarm.
+
+                            Overlay Network
+
+
+  Docker Host A                                      Docker Host A
+
+container A container B                          container A container B
+
+
+
+----------------------------------------------
+we are creating a service with 3 container replicas
+
+docker service create --name fun-service --network fun-net --replicas 3 nginx:latest
+docker service ps fun-service
+docker network inspect fun-service
+
+
+
+4. None Network
+--------------------------------------
+used to isolate the container and cannot communicate with any container 
+
+
+
+
+
+
+
+
+
+
+    
+  
+    
+
+
+
