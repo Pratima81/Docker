@@ -12,3 +12,4 @@ WORKDIR /apps
 
 -------Open cmd promt---------
 docker build -t nginx-alpine-image .
+docker run -it -d -p 80:80 --name aplineContainer nginx-alpine-image
