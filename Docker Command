@@ -1,1 +1,271 @@
+#To check the version of Docker installed 
+  docker --version
+
+
+#Displays system wide information
+  docker info
+
+
+#TO pull Docker image from Docker Repository
+  docker pull ubuntu
+  docker pull openjdk:18
+  docker pull mysql
+
+
+#To Docker Image from Dockerfile
+  docker build <options>  <directory path> OR <URL>
+
+if you want to include files and folder from current/same directory then use below commands
+
+docker build .
+
+#docker run – Run a container from a docker image.
+
+Example:
+
+docker run -i -t ubuntu /bin/bash
+-i  –                                  To start an interactive session.
+-t  –                                 Allocates a tty and attaches stdin and stdout.
+ubuntu–                       Docker image that is used to create the container.
+bash (or /bin/bash)– command that is running inside the Ubuntu container.
+
+Note- The container will stop when you leave it with the command exit. If you like to have a container that is running in the background, you just need to add the -d option in the command
+OR
+To exit from docker container type CTRL + P + Q. This will leave container running in background an provide you host system console.
+
+Now Run Docker Container in background.
+
+docker run -i -t --name=Ubuntu-Linux -d ubuntu /bin/bash
+
+
+#docker commit – To commit a changes in container file OR create new Docker Image
+
+Example:
+
+docker commit [options] <container-id> [REPOSITORY[:TAG]]
+Lets commit to existing docker container (023828e786e0) and create new Docker Image (Ubuntu-apache) OR Docker commit to Same Image
+
+docker commit 023828e786e0  ubuntu-apache
+
+
+#To list or check the images
+  docker images
+
+
+#To start the container
+    docker run python
+    docker run imageid
+    docker run --name pythonContainer -d python/id
+    docker run --name pythonContainer1 -it -d python
+    docker run --name javaContainer -it -d openjdk
+    docker run --name mysqlDB -e MYSQL_ROOT_PASSWORD=password -d mysql
+
+    docker run --name nginxServer -d -p 8080:80 nginx
+
+    docker pull httpd
+    docker run --name myApacheServer -d -p 8080:80 httpd
+
+
+#TO restart the container
+
+    docker restart pythonContainer1
+    docker restart javaContainer
+
+
+#To stop the container
+    docker stop containername/id
+    docker stop pythonContainer1
+    docker stop myApacheServer  
+
+
+#To remove the container
+    docker rm containerid
+
+
+#TO remove images
+    docker rmi openjdk
+    docker rmi openjdk:18
+    
+
+
+#To go inside container
+    docker exec -it containerid python3
+
+    docker exec -it mysqlDB bash
+    mysql -p 
+    show dabases;
+    create database mydb;
+    use mydb;
+    exit;
+
+
+#Access the shell of Docker Container that runs in the background mode using “CONTAINER ID”
+    docker exec – To Access the shell of Docker Container
+
+Access the shell of Docker Container that runs in the background mode using “NAMES”
+    docker exec -i -t 023828e786e0 /bin/bash
+
+Type “Exit” to exit from Docker Container shell.
+    docker exec -i -t Ubuntu-Linux /bin/bash
+
+To update the System Packages of Docker Container
+
+Let’s install Apache2 in docker container
+    docker exec 023828e786e0 apt-get update
+
+To check apache2 service status inside Docker Container
+    docker exec 023828e786e0 apt-get install apache2 -y
+
+Start Apache2 service inside Docker Container
+    docker exec 023828e786e0 service apache2 status
+    docker exec 023828e786e0 service apache2 start
+
+
+
+#To inspect the container ID
+  docker inspect containerID
+  docker inspect mysqlDB
+  
+
+# To list all Docker Containers including stopped
+  docker ps -a
+
+
+#TO Search the docker images
+  docker search MySQl
+  docker search nginx
+
+
+#docker start – To start a docker container
+  docker start <container-id>
+
+
+# docker logs – To view logs of Docker container
+To view Logs for a Docker Container
+
+      docker logs <Containe ID>
+
+
+
+#docker rename – To rename Docker container
+To rename Docker Container
+
+      docker rename <Old_Name> <New_Name>
+
+
+#docker rm – To remove Docker container
+To remove the Docker Container, stop it first and then remove it
+
+    docker rm <CONTAINER ID>
+
+Run below command to remove all stopped containers
+
+sudo docker rm -f $(sudo docker ps -a -q)
+To remove untagged docker images
+
+sudo docker images | grep none | awk '{ print $3; }' | xargs sudo docker rmi
+
+
+# docker inspect – Docker container info command
+
+docker inspect [OPTIONS] NAME|ID [NAME|ID...]
+OR
+
+docker container inspect [OPTIONS] CONTAINER [CONTAINER...]
+Example:
+
+docker inspect 023828e786e0
+To get Docker container IP Address
+
+docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $DOCKER_CONTAINER_NAME
+To get list of all ports binds to Docker container
+
+docker inspect --format='{{range $p, $conf := .NetworkSettings.Ports}} {{$p}} -> {{(index $conf 0).HostPort}} {{end}}' $DOCKER_INSTANCE_NAME
+
+
+#To push our images to the docker hub
+    docker login
+    docker commit
+    docker push
+    docker copy
+    docker logout
+
+
+#To check the logs of the container
+    docker logs pythonContainer1
+
+
+#How to create our own Docker image using DockerFile
+  Docker file is the normal text file with commands
+
+  STEPS
+        mkdir ubuntu-image
+        ls
+        cd .\ubuntu-image\
+        code .
+        create a docker file named Dockerfile
+
+            FROM ubuntu      <----parent/base image
+            MAINTAINER pratima
+            RUN apt update
+            CMD ["echo", "this is my firsdt ubuntu image"]
+
+        open terminal
+            docker build -t myubuntuimage .
+            docker run --name myUbuntuContainer -it -d 
+
+
+
+  work with Java
+        mkdir JAVA-PROJECT
+        cd JAVA-PROJECT
+        create 1 java file (Test.java)
+        create Dockerfile
+            FROM openjdk:11
+            WORKDIR /usr/src/myapp
+            COPY . /usr/src/myapp
+            RUN javac Test.java
+            CMD ["java", "Test"]
+
+
+    open terminal
+          docker build -t myjavaimage .
+          docker run --name javaProject -it -d myjavaimage
+
+
+work with Spring
+        //first create jar file of a spring project
+        //copy the jar file where you want to make the image
+
+        mkdir boot-project
+        cd boot-project
+        code .
+        copy the jar file here
+        create a Dockerfile
+        FROM openjdk
+        WORKDIR /usr/src/myapp
+        COPY . /usr/src/myapp/
+        CMD ["java", "-jar", "jarfile name"]
+        EXPOSE 9595
+
+  open terminal
+      docker build -t bootimage .
+      docker run --name bootProject -it -d -p 9595:9595 bootimage
+      docker ps
+      docker logs bootProject
+
+
+
+
+      
+
+          
+            
+            
+            
+            
+
+
+
+
 
