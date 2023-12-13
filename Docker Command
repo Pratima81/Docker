@@ -35,35 +35,81 @@ To exit from docker container type CTRL + P + Q. This will leave container runni
 
 Now Run Docker Container in background.
 
-docker run -i -t --name=Ubuntu-Linux -d ubuntu /bin/bash
+      docker run -i -t --name=Ubuntu-Linux -d ubuntu /bin/bash
+
+
+
+#docker kill – To stop and remove Docker containers
+
+Syntax:
+
+docker kill [OPTIONS] CONTAINER [CONTAINER…]
+Example:
+
+To stop all docker containers
+
+docker kill $(docker ps -q)
+To remove all docker containers
+
+docker rm $(docker ps -a -q)
+
+
+#docker cp – To copy files or folders between a container and from local filesystem.
+
+Syntax:
+
+      docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
+      docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH
+Examples:
+
+To copy directory from Docker host to container
+
+      sudo docker cp ./directory_path 023828e786e0:/home/ubuntu
+To copy directory from docker container to host
+
+      sudo docker cp 023828e786e0:/etc/apache2/sites-enabled .
 
 
 #docker commit – To commit a changes in container file OR create new Docker Image
 
 Example:
 
-docker commit [options] <container-id> [REPOSITORY[:TAG]]
+      docker commit [options] <container-id> [REPOSITORY[:TAG]]
 Lets commit to existing docker container (023828e786e0) and create new Docker Image (Ubuntu-apache) OR Docker commit to Same Image
 
-docker commit 023828e786e0  ubuntu-apache
+      docker commit 023828e786e0  ubuntu-apache
+
+To copy files from Docker container to host
+
+      sudo docker cp 023828e786e0:/etc/apache2 .
+
+
+To copy files from Host to Docker container
+
+Syntax:
+
+      docker cp SOURCE_HOST_PATH  CONTAINER:DESTINATION_PATH
+Example:
+
+      sudo docker cp ./test.fosstechnix.com.conf 023828e786e0:/etc/apache2/sites-enabled
 
 
 #To list or check the images
-  docker images
+      docker images
 
 
 #To start the container
-    docker run python
-    docker run imageid
-    docker run --name pythonContainer -d python/id
-    docker run --name pythonContainer1 -it -d python
-    docker run --name javaContainer -it -d openjdk
-    docker run --name mysqlDB -e MYSQL_ROOT_PASSWORD=password -d mysql
+      docker run python
+      docker run imageid
+      docker run --name pythonContainer -d python/id
+      docker run --name pythonContainer1 -it -d python
+      docker run --name javaContainer -it -d openjdk
+      docker run --name mysqlDB -e MYSQL_ROOT_PASSWORD=password -d mysql
 
-    docker run --name nginxServer -d -p 8080:80 nginx
+      docker run --name nginxServer -d -p 8080:80 nginx
 
-    docker pull httpd
-    docker run --name myApacheServer -d -p 8080:80 httpd
+      docker pull httpd
+      docker run --name myApacheServer -d -p 8080:80 httpd
 
 
 #TO restart the container
@@ -73,20 +119,25 @@ docker commit 023828e786e0  ubuntu-apache
 
 
 #To stop the container
-    docker stop containername/id
-    docker stop pythonContainer1
-    docker stop myApacheServer  
+      docker stop containername/id
+      docker stop pythonContainer1
+      docker stop myApacheServer  
+
+
+#docker pause – To pause a running container
+      docker pause container_id
+
 
 #docker rename – To rename Docker Container
-    docker rename <Old_Name> <New_Name>
+      docker rename <Old_Name> <New_Name>
 
 
 #To remove the container
-    docker rm containerid
+      docker rm containerid
 
 
 #TO remove images
-    docker rmi openjdk
+      docker rmi openjdk
     docker rmi openjdk:18
 
 Run below command to remove all stopped containers
@@ -190,6 +241,37 @@ docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}
 To get list of all ports binds to Docker container
 
 docker inspect --format='{{range $p, $conf := .NetworkSettings.Ports}} {{$p}} -> {{(index $conf 0).HostPort}} {{end}}' $DOCKER_INSTANCE_NAME
+
+
+# docker history – To show history of Docker Image
+
+      docker image history [OPTIONS] IMAGE
+Examples:
+
+      docker history <image-id> --no-trunc
+Get full history in tabular format:
+
+      docker history <image-id> --format "table{{.ID}}, {{.CreatedBy}}" --no-trunc
+
+
+#docker save – To save an existing Docker Image
+      docker save ubuntu_image:tag | gzip > ubuntu_image.tar.gz
+
+
+#docker import – Create Docker Image from Tarball
+      docker import [OPTIONS] file|URL|- [REPOSITORY[:TAG]]
+Examples:
+
+      docker import ./ubuntu_image.tar.gz ubuntu:latest
+this will create “ubuntu:latest” images from compressed imported image
+
+Import a Docker container as an image from file
+
+      cat docker_container.tar.gz | docker import - my_image:tag
+
+
+#docker export – To export existing Docker container
+      docker export container_id | gzip > new_container.tar.gz
 
 
 #To push our images to the docker hub
