@@ -77,6 +77,9 @@ docker commit 023828e786e0  ubuntu-apache
     docker stop pythonContainer1
     docker stop myApacheServer  
 
+#docker rename – To rename Docker Container
+    docker rename <Old_Name> <New_Name>
+
 
 #To remove the container
     docker rm containerid
@@ -85,7 +88,13 @@ docker commit 023828e786e0  ubuntu-apache
 #TO remove images
     docker rmi openjdk
     docker rmi openjdk:18
-    
+
+Run below command to remove all stopped containers
+
+sudo docker rm -f $(sudo docker ps -a -q)
+To remove untagged docker images
+
+sudo docker images | grep none | awk '{ print $3; }' | xargs sudo docker rmi    
 
 
 #To go inside container
